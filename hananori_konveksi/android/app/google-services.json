@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "967327593812",
+    "firebase_url": "https://hananori-pui-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hananori-pui",
+    "storage_bucket": "hananori-pui.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967327593812:android:58ffa49338925ab6fd44c1",
+        "android_client_info": {
+          "package_name": "com.example.hananori_konveksi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMLTyfrFTJV36DjkM6DqmPtZ-vFg42ql0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
