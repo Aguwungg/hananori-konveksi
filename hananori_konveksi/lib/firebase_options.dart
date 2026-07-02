@@ -23,20 +23,11 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -67,5 +58,35 @@ class DefaultFirebaseOptions {
     projectId: 'hananori-pui',
     databaseURL: 'https://hananori-pui-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hananori-pui.firebasestorage.app',
+  );
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDjWnjr1nyKNJns2wjDBoSgAulgJ65Ghs8',
+    appId: '1:967327593812:ios:91cbd269a9d8361cfd44c1',
+    messagingSenderId: '967327593812',
+    projectId: 'hananori-pui',
+    databaseURL: 'https://hananori-pui-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'hananori-pui.firebasestorage.app',
+    iosBundleId: 'com.example.hananoriKonveksi',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDjWnjr1nyKNJns2wjDBoSgAulgJ65Ghs8',
+    appId: '1:967327593812:ios:91cbd269a9d8361cfd44c1',
+    messagingSenderId: '967327593812',
+    projectId: 'hananori-pui',
+    databaseURL: 'https://hananori-pui-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'hananori-pui.firebasestorage.app',
+    iosBundleId: 'com.example.hananoriKonveksi',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBCQ6716OAw-0jTKG2rA-ll3ZghAHMJ5PM',
+    appId: '1:967327593812:web:3d7596fb92b68daffd44c1',
+    messagingSenderId: '967327593812',
+    projectId: 'hananori-pui',
+    authDomain: 'hananori-pui.firebaseapp.com',
+    databaseURL: 'https://hananori-pui-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'hananori-pui.firebasestorage.app',
+    measurementId: 'G-BE9XV17S7F',
   );
 }

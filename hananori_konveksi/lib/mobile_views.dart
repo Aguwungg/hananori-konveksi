@@ -238,20 +238,20 @@ class TimelinePage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator(color: Colors.black));
             }
 
-            OrderData? order;
+            List<OrderData> matchedOrders = [];
 
             if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
               Map<dynamic, dynamic> dataMap = snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
               List<OrderData> ordersList = dataMap.values.map((e) => OrderData.fromMap(e as Map<dynamic, dynamic>)).toList();
               
-              try { 
-                order = ordersList.firstWhere((o) => o.idPesanan.toLowerCase() == orderId.toLowerCase() || o.nomorWa == orderId); 
-              } catch (e) { 
-                order = null; 
-              }
+              // Filter semua pesanan yang cocok (bisa lebih dari 1)
+              matchedOrders = ordersList.where((o) => 
+                o.idPesanan.toLowerCase() == orderId.toLowerCase() || 
+                o.nomorWa == orderId
+              ).toList();
             }
 
-            if (order == null) {
+            if (matchedOrders.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -265,6 +265,85 @@ class TimelinePage extends StatelessWidget {
               );
             }
 
+            // LOGIKA BARU: Jika ada lebih dari 1 pesanan untuk nomor WA ini
+            if (matchedOrders.length > 1) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context), 
+                          child: const Text('Home', style: TextStyle(color: Colors.grey, fontSize: 14, fontWeight: FontWeight.bold))
+                        ), 
+                        const Text(' > Pilih Pesanan', style: TextStyle(color: Colors.grey, fontSize: 14))
+                      ]
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text('Ditemukan Beberapa Pesanan', style: TextStyle(fontFamily: 'IntegralCF', fontSize: 20)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text('Nomor WA $orderId memiliki ${matchedOrders.length} pesanan aktif.', style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      itemCount: matchedOrders.length,
+                      separatorBuilder: (context, index) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final o = matchedOrders[index];
+                        return InkWell(
+                          onTap: () {
+                            // Mengarahkan ke halaman Timeline menggunakan ID Pesanan uniknya
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => TimelinePage(orderId: o.idPesanan)));
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 50, height: 50, 
+                                  decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)), 
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8), 
+                                    child: Image.asset(o.imagePath, fit: BoxFit.cover, errorBuilder: (c, e, s) => const Icon(Icons.inventory, color: Colors.grey))
+                                  )
+                                ), 
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start, 
+                                    children: [
+                                      Text(o.produk, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)), 
+                                      const SizedBox(height: 4), 
+                                      Text('ID: ${o.idPesanan.toUpperCase()}', style: const TextStyle(fontSize: 12, color: Colors.black54)), 
+                                    ]
+                                  )
+                                ),
+                                const Icon(Icons.chevron_right, color: Colors.grey),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            // Jika hanya 1 pesanan, tampilkan timeline seperti biasa
+            final order = matchedOrders.first;
             int activeStageIndex = sopStages.indexOf(order.statusProduksi);
             return SingleChildScrollView(
               child: Padding(
@@ -294,7 +373,7 @@ class TimelinePage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Pemesan: ${order!.namaPelanggan}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)), const Divider(height: 24),
+                            Text('Pemesan: ${order.namaPelanggan}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)), const Divider(height: 24),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
