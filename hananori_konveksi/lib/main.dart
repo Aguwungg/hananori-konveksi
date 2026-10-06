@@ -31,33 +31,41 @@ class FadeTransitionBuilder extends PageTransitionsBuilder {
   }
 }
 
+final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
+
 class HananoriApp extends StatelessWidget {
   const HananoriApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hananori Konveksi',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.black,
-        scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'Satoshi',
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          elevation: 0,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: FadeTransitionBuilder(),
-            TargetPlatform.iOS: FadeTransitionBuilder(),
-            TargetPlatform.macOS: FadeTransitionBuilder(),
-            TargetPlatform.windows: FadeTransitionBuilder(),
-          },
-        ),
-      ),
-      home: const HomePage(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeNotifier,
+      builder: (_, ThemeMode currentMode, __) {
+        return MaterialApp(
+          title: 'Hananori Konveksi',
+          debugShowCheckedModeBanner: false,
+          themeMode: currentMode,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primaryColor: Colors.black,
+            scaffoldBackgroundColor: Colors.white,
+            fontFamily: 'Satoshi',
+            appBarTheme: const AppBarTheme(backgroundColor: Colors.white, foregroundColor: Colors.black, elevation: 0),
+            pageTransitionsTheme: const PageTransitionsTheme(builders: { TargetPlatform.android: FadeTransitionBuilder(), TargetPlatform.iOS: FadeTransitionBuilder(), TargetPlatform.macOS: FadeTransitionBuilder(), TargetPlatform.windows: FadeTransitionBuilder()}),
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            primaryColor: Colors.amber,
+            scaffoldBackgroundColor: const Color(0xFF0F0F0F), // Premium dark background
+            fontFamily: 'Satoshi',
+            appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF1E1E1E), foregroundColor: Colors.white, elevation: 0),
+            pageTransitionsTheme: const PageTransitionsTheme(builders: { TargetPlatform.android: FadeTransitionBuilder(), TargetPlatform.iOS: FadeTransitionBuilder(), TargetPlatform.macOS: FadeTransitionBuilder(), TargetPlatform.windows: FadeTransitionBuilder()}),
+            cardColor: const Color(0xFF1E1E1E),
+            dividerColor: Colors.white10,
+          ),
+          home: const HomePage(),
+        );
+      },
     );
   }
 }

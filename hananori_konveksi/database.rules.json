@@ -1,0 +1,40 @@
+{
+  "rules": {
+    "orders": {
+      // By default, only authenticated admin can read/write everything
+      ".read": "auth != null",
+      ".write": "auth != null",
+      
+      "$orderId": {
+        // Allow unauthenticated users to read a specific order IF they know the orderId
+        // The mobile app will query this specific path or filter.
+        ".read": true, 
+        
+        ".validate": "newData.hasChildren(['idPesanan', 'namaPelanggan', 'nomorWa', 'produk', 'qty', 'statusProduksi', 'tglDp', 'estimasiSelesai'])",
+        
+        "idPesanan": {
+          ".validate": "newData.isString() && newData.val().matches(/^HNN-\\d{4}-\\d{4}$/)"
+        },
+        "namaPelanggan": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().matches(/^[a-zA-Z\\s]+$/)"
+        },
+        "nomorWa": {
+          ".validate": "newData.isString() && newData.val().matches(/^(08|62)\\d{8,11}$/)"
+        },
+        "qty": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
+        },
+        "tglDp": {
+          ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
+        },
+        "estimasiSelesai": {
+          ".validate": "newData.isString() && newData.val().matches(/^\\d{4}-\\d{2}-\\d{2}$/)"
+        }
+      }
+    },
+    "products": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}
