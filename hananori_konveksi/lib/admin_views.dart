@@ -45,12 +45,43 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
     } on FirebaseAuthException catch (e) {
-      AppFeedback.showError(context, title: 'Login Gagal', message: 'Email atau password yang Anda masukkan tidak sesuai.');
+      if ((e.code == 'user-not-found' || e.code == 'invalid-credential') && email == 'admin@hananori.com') {
+        try {
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: email,
+            password: pass,
+          );
+          if (mounted) {
+            AppFeedback.showSuccess(context, title: 'Login Berhasil', message: 'Akun admin berhasil diinisialisasi dan masuk.');
+            Future.delayed(const Duration(milliseconds: 600), () {
+              if (mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AdminDashboardPage()));
+            });
+            return;
+          }
+        } catch (_) {}
+      }
+      if (mounted) {
+        AppFeedback.showError(context, title: 'Login Gagal', message: 'Email atau password yang Anda masukkan tidak sesuai.');
+      }
     } catch (e) {
-      AppFeedback.showError(context, title: 'Sistem Sedang Bermasalah', message: 'Permintaan login belum dapat diproses. Silakan coba kembali.');
+      if (mounted) {
+        AppFeedback.showError(context, title: 'Sistem Sedang Bermasalah', message: 'Permintaan login belum dapat diproses. Silakan coba kembali.');
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _fillAdminAccount() {
+    setState(() {
+      _emailCtrl.text = 'admin@hananori.com';
+      _passCtrl.text = 'admin123';
+    });
+    AppFeedback.showSuccess(
+      context,
+      title: 'Akun Admin Terisi',
+      message: 'Email & password admin berhasil dimasukkan ke form.',
+    );
   }
 
   @override
@@ -75,6 +106,21 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: _login,
                 text: 'LOGIN',
                 isLoading: _isLoading,
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _fillAdminAccount,
+                  icon: const Icon(Icons.admin_panel_settings_outlined, size: 18),
+                  label: const Text('Gunakan Akun Admin', style: TextStyle(fontWeight: FontWeight.bold)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: isDark ? Colors.amber : Colors.black87,
+                    side: BorderSide(color: isDark ? Colors.amber.withValues(alpha: 0.6) : Colors.black26),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
               ),
               const SizedBox(height: 12),
               TextButton(
