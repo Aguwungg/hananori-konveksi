@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd hananori_konveksi && bash build.sh",
+  "outputDirectory": "hananori_konveksi/build/web",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
